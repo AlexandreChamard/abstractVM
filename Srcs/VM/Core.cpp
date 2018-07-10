@@ -145,7 +145,7 @@ namespace vm {
 		_stack.pop();
 		IOperand::ptr op2 = Factory::createOperandPtr(_stack.front().getType(), _stack.front().toString());
 		_stack.pop();
-		_stack.push(*op1 - *op2);
+		_stack.push(*op2 - *op1);
 	}
 	void Core::mul()
 	{
@@ -161,7 +161,7 @@ namespace vm {
 		_stack.pop();
 		IOperand::ptr op2 = Factory::createOperandPtr(_stack.front().getType(), _stack.front().toString());
 		_stack.pop();
-		_stack.push(*op1 / *op2);
+		_stack.push(*op2 / *op1);
 	}
 	void Core::mod()
 	{
@@ -169,7 +169,7 @@ namespace vm {
 		_stack.pop();
 		IOperand::ptr op2 = Factory::createOperandPtr(_stack.front().getType(), _stack.front().toString());
 		_stack.pop();
-		_stack.push(*op1 % *op2);
+		_stack.push(*op2 % *op1);
 	}
 	void Core::sqrt()
 	{
