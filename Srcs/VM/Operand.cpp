@@ -16,15 +16,15 @@ IOperand *IOperand::sub(eOperandType type, IOperand const &op1, IOperand const &
 {
 	switch (type) {
 		case eOperandType::Int8:
-			return *Factory::createOperand(eOperandType::Int8, op1.toString()) - op2;
+			return *Factory::createOperandPtr(eOperandType::Int8, op1.toString()) - op2;
 		case eOperandType::Int16:
-			return *Factory::createOperand(eOperandType::Int16, op1.toString()) - op2;
+			return *Factory::createOperandPtr(eOperandType::Int16, op1.toString()) - op2;
 		case eOperandType::Int32:
-			return *Factory::createOperand(eOperandType::Int32, op1.toString()) - op2;
+			return *Factory::createOperandPtr(eOperandType::Int32, op1.toString()) - op2;
 		case eOperandType::Float:
-			return *Factory::createOperand(eOperandType::Float, op1.toString()) - op2;
+			return *Factory::createOperandPtr(eOperandType::Float, op1.toString()) - op2;
 		case eOperandType::Double:
-			return *Factory::createOperand(eOperandType::Double, op1.toString()) - op2;
+			return *Factory::createOperandPtr(eOperandType::Double, op1.toString()) - op2;
 		case eOperandType::BigDecimal:
 			return op1 - op2;
 	}
@@ -35,15 +35,15 @@ IOperand *IOperand::div(eOperandType type, IOperand const &op1, IOperand const &
 {
 	switch (type) {
 		case eOperandType::Int8:
-			return *Factory::createOperand(eOperandType::Int8, op1.toString()) / op2;
+			return *Factory::createOperandPtr(eOperandType::Int8, op1.toString()) / op2;
 		case eOperandType::Int16:
-			return *Factory::createOperand(eOperandType::Int16, op1.toString()) / op2;
+			return *Factory::createOperandPtr(eOperandType::Int16, op1.toString()) / op2;
 		case eOperandType::Int32:
-			return *Factory::createOperand(eOperandType::Int32, op1.toString()) / op2;
+			return *Factory::createOperandPtr(eOperandType::Int32, op1.toString()) / op2;
 		case eOperandType::Float:
-			return *Factory::createOperand(eOperandType::Float, op1.toString()) / op2;
+			return *Factory::createOperandPtr(eOperandType::Float, op1.toString()) / op2;
 		case eOperandType::Double:
-			return *Factory::createOperand(eOperandType::Double, op1.toString()) / op2;
+			return *Factory::createOperandPtr(eOperandType::Double, op1.toString()) / op2;
 		case eOperandType::BigDecimal:
 			return op1 / op2;
 	}
@@ -54,15 +54,15 @@ IOperand *IOperand::mod(eOperandType type, IOperand const &op1, IOperand const &
 {
 	switch (type) {
 		case eOperandType::Int8:
-			return *Factory::createOperand(eOperandType::Int8, op1.toString()) % op2;
+			return *Factory::createOperandPtr(eOperandType::Int8, op1.toString()) % op2;
 		case eOperandType::Int16:
-			return *Factory::createOperand(eOperandType::Int16, op1.toString()) % op2;
+			return *Factory::createOperandPtr(eOperandType::Int16, op1.toString()) % op2;
 		case eOperandType::Int32:
-			return *Factory::createOperand(eOperandType::Int32, op1.toString()) % op2;
+			return *Factory::createOperandPtr(eOperandType::Int32, op1.toString()) % op2;
 		case eOperandType::Float:
-			return *Factory::createOperand(eOperandType::Float, op1.toString()) % op2;
+			return *Factory::createOperandPtr(eOperandType::Float, op1.toString()) % op2;
 		case eOperandType::Double:
-			return *Factory::createOperand(eOperandType::Double, op1.toString()) % op2;
+			return *Factory::createOperandPtr(eOperandType::Double, op1.toString()) % op2;
 		case eOperandType::BigDecimal:
 			return op1 % op2;
 	}
@@ -92,8 +92,14 @@ IOperand *IOperand::sqrt(IOperand const &op)
 Int8::Int8(std::string const &str)
 {
 	std::string::size_type pos;
-	long n = std::stol(str, &pos);
-
+	long n;
+	try {
+		n = std::stol(str, &pos);
+	} catch (std::exception const &e) {
+		if (str[0] == '-')
+			throw vm::ExecError{"underflow"};
+		throw vm::ExecError{"overflow"};
+	}
 	if (pos != str.size())
 		throw vm::ExecError{"bad number formation"};
 	if (n < INT8_MIN)
@@ -140,8 +146,14 @@ IOperand *Int8::operator%(IOperand const &rhs) const
 Int16::Int16(std::string const &str)
 {
 	std::string::size_type pos;
-	long n = std::stol(str, &pos);
-
+	long n;
+	try {
+		n = std::stol(str, &pos);
+	} catch (std::exception const &e) {
+		if (str[0] == '-')
+			throw vm::ExecError{"underflow"};
+		throw vm::ExecError{"overflow"};
+	}
 	if (pos != str.size())
 		throw vm::ExecError{"bad number formation"};
 	if (n < INT16_MIN)
@@ -188,8 +200,14 @@ IOperand *Int16::operator%(IOperand const &rhs) const
 Int32::Int32(std::string const &str)
 {
 	std::string::size_type pos;
-	long n = std::stol(str, &pos);
-
+	long n;
+	try {
+		n = std::stol(str, &pos);
+	} catch (std::exception const &e) {
+		if (str[0] == '-')
+			throw vm::ExecError{"underflow"};
+		throw vm::ExecError{"overflow"};
+	}
 	if (pos != str.size())
 		throw vm::ExecError{"bad number formation"};
 	if (n < INT32_MIN)
