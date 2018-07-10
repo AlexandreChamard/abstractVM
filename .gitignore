@@ -1,2 +1,3 @@
 *.o
 /abstractVM
+.vscode
