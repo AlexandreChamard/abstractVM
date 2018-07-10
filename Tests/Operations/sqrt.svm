@@ -1,0 +1,6 @@
+push int8(10)
+sqrt
+assert int8(3)
+sqrt
+assert int8(1)
+exit

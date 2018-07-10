@@ -1,0 +1,8 @@
+push int8(8)
+push int8(9)
+push int8(10)
+add
+assert int8(19)
+add
+assert int8(27)
+exit
