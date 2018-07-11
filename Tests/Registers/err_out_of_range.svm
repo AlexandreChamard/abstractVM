@@ -1,0 +1,3 @@
+push int8(42)
+store int8(42)
+exit

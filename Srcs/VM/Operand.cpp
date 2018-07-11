@@ -71,6 +71,8 @@ IOperand *IOperand::mod(eOperandType type, IOperand const &op1, IOperand const &
 }
 IOperand *IOperand::sqrt(IOperand const &op)
 {
+	if (op.toString()[0] == '-')
+		throw vm::ExecError{"sqrt of negative number"};
 	switch (op.getType()) {
 		case eOperandType::Int8:
 			return Factory::createOperand(eOperandType::Int8, std::to_string(static_cast<long>(::sqrt(std::stod(op.toString())))));

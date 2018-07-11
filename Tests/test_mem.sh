@@ -11,25 +11,48 @@ then
 	exit 1
 fi
 
-if [[ $# != 1 && $2 != '-v' ]]
-then
-	printf '\e[1;34m%s\e[m\n' "$2"
-	if [[ $3 == -v ]]
-	then
-		cat $2
-		echo -e '\n--------'
-	fi
-	valgrind --leak-check=full ./$1 ./$2 1>/dev/null
-	exit
-fi
+prog=$1
+shift
+verbose=false
 
-for f in $(find . -name \*.svm -print)
-do
-	printf '\e[1;34m%s\e[m\n' "$f"
-	if [[ $2 == -v ]]
-	then
-		cat $f
-		echo -e '\n--------'
-	fi
-	valgrind --leak-check=full ./$1 $f 1>/dev/null
-done
+if [[ $# -ge 1 && $1 == '-v' ]]
+then
+	verbose=true
+	shift
+fi
+if [[ $# -eq 0 ]]
+then
+	for f in $(find . -name \*.svm -print)
+	do
+		if [[ $f == *"err"* ]]
+		then
+			printf '\e[1;31m%s\e[m\n' "$f"
+		else
+			printf '\e[1;34m%s\e[m\n' "$f"
+		fi
+		if [[ $verbose == true ]]
+		then
+			cat $f
+			echo -e '\n--------'
+		fi
+		valgrind --leak-check=full ./$prog $f 1>/dev/null
+	done
+else
+	while [[ $# -gt 0 ]]
+	do
+		if [[ $1 == *"err"* ]]
+		then
+			printf '\e[1;31m%s\e[m\n' "$1"
+		else
+			printf '\e[1;34m%s\e[m\n' "$1"
+		fi
+		if [[ $verbose == true ]]
+		then
+			cat $1
+			echo -e '\n--------'
+		fi
+		valgrind --leak-check=full ./$prog ./$1 1>/dev/null
+		./$prog ./$1
+		shift
+	done
+fi

@@ -1,0 +1,80 @@
+push int8(8)
+push int16(16)
+push int32(32)
+push float(11.11)
+push double(42.42)
+store int8(0)
+store int16(1)
+store int32(2)
+store float(3.0)
+store double(4.0)
+load int8(0)
+load int16(1)
+load int32(2)
+load float(3.0)
+load double(4.0)
+store int8(5)
+store int16(6)
+store int32(7)
+store float(8.0)
+store double(9.0)
+load int8(5)
+load int16(6)
+load int32(7)
+load float(8.0)
+load double(9.0)
+store int8(10)
+store int16(11)
+store int32(12)
+store float(13)
+dup
+store double(14)
+store double(15)
+load int8(15)
+load int8(14)
+load int8(13)
+load int8(12)
+load int8(11)
+load int8(10)
+load int8(9)
+load int8(8)
+load int8(7)
+load int8(6)
+load int8(5)
+load int8(4)
+load int8(3)
+load int8(2)
+load int8(1)
+load int8(0)
+assert double(42.42)
+pop
+assert float(11.11)
+pop
+assert int32(32)
+pop
+assert int16(16)
+pop
+assert int8(8)
+pop
+assert int8(8)
+pop
+assert int16(16)
+pop
+assert int32(32)
+pop
+assert float(11.11)
+pop
+assert double(42.42)
+pop
+assert double(42.42)
+pop
+assert float(11.11)
+pop
+assert int32(32)
+pop
+assert int16(16)
+pop
+assert int8(8)
+pop
+assert int8(8)
+exit

@@ -1,0 +1,3 @@
+push int8(-1)
+sqrt
+exit

@@ -194,7 +194,8 @@ namespace vm {
 
 		if (n > 15 || n < 0)
 			throw ExecError{"access to unvalid register number"};
-		_regs[n] = Factory::createOperandPtr(_regs[n]->getType(), _regs[n]->toString());
+		_regs[n] = Factory::createOperandPtr(_stack.front().getType(), _stack.front().toString());
+		_stack.pop();
 	}
 	void Core::print()
 	{
