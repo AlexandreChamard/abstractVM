@@ -2,7 +2,7 @@
 
 if [[ $# == 0 ]]
 then
-	echo -e "\n\tUSAGE :  "$0" ./your_prog [-v | testfile]\n"
+	echo -e "\n\tUSAGE :  "$0" ./your_prog [-v] [testfiles...]\n"
 	exit
 fi
 if [[ ! -f $1 ]]
@@ -24,7 +24,7 @@ if [[ $# -eq 0 ]]
 then
 	for f in $(find . -name \*.svm -print)
 	do
-		if [[ $f == *"err"* ]]
+		if [[ $f == *"err_"* ]]
 		then
 			printf '\e[1;31m%s\e[m\n' "$f"
 		else
@@ -40,7 +40,7 @@ then
 else
 	while [[ $# -gt 0 ]]
 	do
-		if [[ $1 == *"err"* ]]
+		if [[ $1 == *"err_"* ]]
 		then
 			printf '\e[1;31m%s\e[m\n' "$1"
 		else

@@ -1,0 +1,7 @@
+push int8(8) ; this is a basic comment
+; this is another comment ; and another ; and another ...
+	; this is a more complex comment
+;;; :0
+;; ; WOW
+;; you're reading this comment
+exit; so much commentary for this useless program
