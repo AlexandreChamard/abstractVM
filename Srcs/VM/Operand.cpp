@@ -90,7 +90,7 @@ IOperand *IOperand::sqrt(IOperand const &op)
 	throw vm::ExecError{"invalid operand"};
 	return nullptr;
 }
-
+/*
 Int8::Int8(std::string const &str)
 {
 	std::string::size_type pos;
@@ -356,7 +356,7 @@ IOperand *Double::operator%(IOperand const &rhs) const
 BigDecimal::BigDecimal(std::string const &str):
 _nb{str}
 {
-	/* verif number is -?[0-9]*.?[0-9]* */
+	// verif number is -?[0-9]*.?[0-9]*
 	if (false)
 		throw vm::ExecError{"bad number formation"};
 }
@@ -387,6 +387,7 @@ IOperand *BigDecimal::operator%(IOperand const &rhs) const
 		throw vm::ExecError{"floating point exception"};
 	return Factory::createOperand(eOperandType::BigDecimal, "0");
 }
+*/
 
 std::ostream &operator<<(std::ostream &os, eOperandType type)
 {

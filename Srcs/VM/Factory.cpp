@@ -6,6 +6,7 @@
 */
 
 #include "Factory.h"
+#include "Operand.h"
 
 const std::array<IOperand *(*)(std::string const &), 6> Factory::creator = {
 	Factory::createInt8,

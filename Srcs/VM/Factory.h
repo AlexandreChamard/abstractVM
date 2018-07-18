@@ -8,12 +8,16 @@
 #pragma once
 
 #include <array>
-#include "Operand.h"
+#include <memory>
+
+#include "OperandType.h"
+
+class IOperand;
 
 class Factory {
 public:
 	static IOperand *createOperand(eOperandType type, std::string const &value);
-	static IOperand::ptr createOperandPtr(eOperandType type, std::string const &value);
+	static std::unique_ptr<IOperand> createOperandPtr(eOperandType type, std::string const &value);
 
 private:
 	static IOperand *createInt8(std::string const &value);

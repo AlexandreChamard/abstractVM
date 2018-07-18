@@ -11,28 +11,10 @@
 #include <iostream>
 #include <string>
 
+#include "Factory.h"
+#include "OperandType.h"
+
 #include "VMErrors.h"
-
-enum class eOperandType {
-	Int8		= 0,
-	Int16		= 1,
-	Int32		= 2,
-	Float		= 3,
-	Double		= 4,
-	BigDecimal	= 5
-};
-constexpr int nOperandType = 6;
-
-static inline eOperandType toOperandType(std::string const &type)
-{
-	static const std::array<std::string, nOperandType> arr = {"int8", "int16", "int32", "float", "double", "bigDecimal"};
-
-	for (int i = 0; i < nOperandType; ++i) {
-		if (arr[i] == type)
-			return static_cast<eOperandType>(i);
-	}
-	throw vm::ExecError{"lexical or syntactical errors"};
-}
 
 class IOperand {
 public:
@@ -53,96 +35,151 @@ protected:
 	static IOperand *mod(eOperandType, IOperand const &, IOperand const &);
 };
 
-class Int8 : public IOperand {
+template<eOperandType eType, typename T>
+class Operand : public IOperand {
 public:
-	Int8(std::string const & = "0");
-	virtual ~Int8(){}
-	std::string toString() const override { return std::to_string(_nb); }
-	eOperandType getType () const override { return eOperandType::Int8; }
-	IOperand *operator+(IOperand const &rhs) const override;
-	IOperand *operator-(IOperand const &rhs) const override;
-	IOperand *operator*(IOperand const &rhs) const override;
-	IOperand *operator/(IOperand const &rhs) const override;
-	IOperand *operator%(IOperand const &rhs) const override;
-private:
-	int8_t _nb;
-};
-
-class Int16 : public IOperand {
-public:
-	Int16(std::string const & = "0");
-	virtual ~Int16(){}
-	std::string toString() const override { return std::to_string(_nb); }
-	eOperandType getType () const override { return eOperandType::Int16; }
-	IOperand *operator+(IOperand const &rhs) const override;
-	IOperand *operator-(IOperand const &rhs) const override;
-	IOperand *operator*(IOperand const &rhs) const override;
-	IOperand *operator/(IOperand const &rhs) const override;
-	IOperand *operator%(IOperand const &rhs) const override;
-private:
-	int16_t _nb;
-};
-
-class Int32 : public IOperand {
-public:
-	Int32(std::string const & = "0");
-	virtual ~Int32(){}
-	std::string toString() const override { return std::to_string(_nb); }
-	eOperandType getType () const override { return eOperandType::Int32; }
-	IOperand *operator+(IOperand const &rhs) const override;
-	IOperand *operator-(IOperand const &rhs) const override;
-	IOperand *operator*(IOperand const &rhs) const override;
-	IOperand *operator/(IOperand const &rhs) const override;
-	IOperand *operator%(IOperand const &rhs) const override;
-private:
-	int32_t _nb;
-};
-
-class Float : public IOperand {
-public:
-	Float(std::string const & = "0");	
-	virtual ~Float(){}
+	Operand<eType, T>(std::string const &);
 	std::string toString() const override;
-	eOperandType getType () const override { return eOperandType::Float; }
+	eOperandType getType () const override;
 	IOperand *operator+(IOperand const &rhs) const override;
 	IOperand *operator-(IOperand const &rhs) const override;
 	IOperand *operator*(IOperand const &rhs) const override;
 	IOperand *operator/(IOperand const &rhs) const override;
 	IOperand *operator%(IOperand const &rhs) const override;
+
 private:
-	float _nb;
+	static const eOperandType _etype = eType;
+	T	_nb;
 };
 
-class Double : public IOperand {
+class Int8 : public Operand<eOperandType::Int8, int8_t> {
 public:
-	Double(std::string const & = "0");
-	virtual ~Double(){}
-	std::string toString() const override;
-	eOperandType getType () const override { return eOperandType::Double; }
-	IOperand *operator+(IOperand const &rhs) const override;
-	IOperand *operator-(IOperand const &rhs) const override;
-	IOperand *operator*(IOperand const &rhs) const override;
-	IOperand *operator/(IOperand const &rhs) const override;
-	IOperand *operator%(IOperand const &rhs) const override;
-private:
-	double _nb;
+	Int8(std::string const &nb = "0"): Operand{nb} {};
 };
 
-class BigDecimal : public IOperand {
+class Int16 : public Operand<eOperandType::Int16, int16_t> {
 public:
-	BigDecimal(std::string const & = "0");
-	virtual ~BigDecimal(){}
-	std::string toString() const override { return _nb; }
-	eOperandType getType () const override { return eOperandType::BigDecimal; }
-	IOperand *operator+(IOperand const &rhs) const override;
-	IOperand *operator-(IOperand const &rhs) const override;
-	IOperand *operator*(IOperand const &rhs) const override;
-	IOperand *operator/(IOperand const &rhs) const override;
-	IOperand *operator%(IOperand const &rhs) const override;
-private:
-	std::string _nb;
+	Int16(std::string const &nb = "0"): Operand{nb} {};
 };
+
+class Int32 : public Operand<eOperandType::Int32, int32_t> {
+public:
+	Int32(std::string const &nb = "0"): Operand{nb} {};
+};
+
+class Float : public Operand<eOperandType::Float, float> {
+public:
+	Float(std::string const &nb = "0"): Operand{nb} {};
+};
+
+class Double : public Operand<eOperandType::Double, double> {
+public:
+	Double(std::string const &nb = "0"): Operand{nb} {};
+};
+
+class BigDecimal : public Operand<eOperandType::BigDecimal, std::string> {
+public:
+	BigDecimal(std::string const &nb = "0"): Operand{nb} {};
+};
+
+static const std::pair<long, long> limits_g[] = {
+	{INT8_MIN, INT8_MAX},
+	{INT16_MIN, INT16_MAX},
+	{INT32_MIN, INT32_MAX}
+};
+
+// class Int8 : public IOperand {
+// public:
+// 	Int8(std::string const & = "0");
+// 	virtual ~Int8(){}
+// 	std::string toString() const override { return std::to_string(_nb); }
+// 	eOperandType getType () const override { return eOperandType::Int8; }
+// 	IOperand *operator+(IOperand const &rhs) const override;
+// 	IOperand *operator-(IOperand const &rhs) const override;
+// 	IOperand *operator*(IOperand const &rhs) const override;
+// 	IOperand *operator/(IOperand const &rhs) const override;
+// 	IOperand *operator%(IOperand const &rhs) const override;
+// private:
+// 	int8_t _nb;
+// };
+
+// class Int16 : public IOperand {
+// public:
+// 	Int16(std::string const & = "0");
+// 	virtual ~Int16(){}
+// 	std::string toString() const override { return std::to_string(_nb); }
+// 	eOperandType getType () const override { return eOperandType::Int16; }
+// 	IOperand *operator+(IOperand const &rhs) const override;
+// 	IOperand *operator-(IOperand const &rhs) const override;
+// 	IOperand *operator*(IOperand const &rhs) const override;
+// 	IOperand *operator/(IOperand const &rhs) const override;
+// 	IOperand *operator%(IOperand const &rhs) const override;
+// private:
+// 	int16_t _nb;
+// };
+
+// class Int32 : public IOperand {
+// public:
+// 	Int32(std::string const & = "0");
+// 	virtual ~Int32(){}
+// 	std::string toString() const override { return std::to_string(_nb); }
+// 	eOperandType getType () const override { return eOperandType::Int32; }
+// 	IOperand *operator+(IOperand const &rhs) const override;
+// 	IOperand *operator-(IOperand const &rhs) const override;
+// 	IOperand *operator*(IOperand const &rhs) const override;
+// 	IOperand *operator/(IOperand const &rhs) const override;
+// 	IOperand *operator%(IOperand const &rhs) const override;
+// private:
+// 	int32_t _nb;
+// };
+
+// class Float : public IOperand {
+// public:
+// 	Float(std::string const & = "0");	
+// 	virtual ~Float(){}
+// 	std::string toString() const override;
+// 	eOperandType getType () const override { return eOperandType::Float; }
+// 	IOperand *operator+(IOperand const &rhs) const override;
+// 	IOperand *operator-(IOperand const &rhs) const override;
+// 	IOperand *operator*(IOperand const &rhs) const override;
+// 	IOperand *operator/(IOperand const &rhs) const override;
+// 	IOperand *operator%(IOperand const &rhs) const override;
+// private:
+// 	float _nb;
+// };
+
+// class Double : public IOperand {
+// public:
+// 	Double(std::string const & = "0");
+// 	virtual ~Double(){}
+// 	std::string toString() const override;
+// 	eOperandType getType () const override { return eOperandType::Double; }
+// 	IOperand *operator+(IOperand const &rhs) const override;
+// 	IOperand *operator-(IOperand const &rhs) const override;
+// 	IOperand *operator*(IOperand const &rhs) const override;
+// 	IOperand *operator/(IOperand const &rhs) const override;
+// 	IOperand *operator%(IOperand const &rhs) const override;
+// private:
+// 	double _nb;
+// };
+
+// class BigDecimal : public IOperand {
+// public:
+// 	BigDecimal(std::string const & = "0");
+// 	virtual ~BigDecimal(){}
+// 	std::string toString() const override { return _nb; }
+// 	eOperandType getType () const override { return eOperandType::BigDecimal; }
+// 	IOperand *operator+(IOperand const &rhs) const override;
+// 	IOperand *operator-(IOperand const &rhs) const override;
+// 	IOperand *operator*(IOperand const &rhs) const override;
+// 	IOperand *operator/(IOperand const &rhs) const override;
+// 	IOperand *operator%(IOperand const &rhs) const override;
+// private:
+// 	std::string _nb;
+// };
 
 std::ostream &operator<<(std::ostream &, eOperandType);
 std::ostream &operator<<(std::ostream &, IOperand *);
 std::ostream &operator<<(std::ostream &, IOperand const &);
+
+#include "Operand.tpp"
